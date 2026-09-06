@@ -39,7 +39,7 @@ In an already-running session, type `/reload` to load or reload the extension.
 | `/beep on` / `/beep off` | Enable/disable — saved to config; turning ON plays a confirmation beep |
 | `/beep vol <0-100>` | Set volume % — saved and played immediately at the new level |
 
-**Argument autocomplete (v0.1.1+):** while typing, pi lists `on`, `off` and `vol <0-100>` automatically — no Tab required. Type `/beep `, pick an option with the arrow keys, then finish a percentage after `vol`. Note that Tab after the space is reserved for file-path completion by pi's editor and will not show these options.
+**Argument autocomplete (v0.1.1+):** while typing, pi lists `on`, `off` and `vol <0-100>` automatically — no Tab required. Type `/beep `, pick an option with the arrow keys, then finish a percentage after `vol` (once you start typing digits, suggestions stop so your input is never overwritten). Note that Tab after the space is reserved for file-path completion by pi's editor and will not show these options.
 
 ## Configuration
 
