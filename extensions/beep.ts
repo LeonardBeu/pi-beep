@@ -129,8 +129,13 @@ export default function (pi: ExtensionAPI) {
 	pi.registerCommand("beep", {
 		description: "Beep notifier: /beep [on|off], /beep vol <0-100>, no arg shows state",
 		getArgumentCompletions: (prefix) => {
-			if (prefix.trim().startsWith("vol")) {
-				return [{ value: "vol 50", label: "vol <0-100>", description: "set volume % (0–100)" }];
+			const p = prefix.trim();
+			// Once a volume number is being typed, stop suggesting so the picker
+			// never replaces what was already entered.
+			if (p.startsWith("vol")) {
+				return /^\d/.test(p.slice(3).trim())
+					? null
+					: [{ value: "vol ", label: "vol <0-100>", description: "set volume % (0–100), e.g. vol 50" }];
 			}
 			return [
 				{ value: "on", label: "on", description: "enable beeps" },
