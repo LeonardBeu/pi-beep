@@ -128,6 +128,16 @@ export default function (pi: ExtensionAPI) {
 
 	pi.registerCommand("beep", {
 		description: "Beep notifier: /beep [on|off], /beep vol <0-100>, no arg shows state",
+		getArgumentCompletions: (prefix) => {
+			if (prefix.trim().startsWith("vol")) {
+				return [{ value: "vol 50", label: "vol <0-100>", description: "set volume % (0–100)" }];
+			}
+			return [
+				{ value: "on", label: "on", description: "enable beeps" },
+				{ value: "off", label: "off", description: "disable beeps" },
+				{ value: "vol ", label: "vol <0-100>", description: "set volume % (0–100), e.g. vol 50" },
+			];
+		},
 		handler: async (args, ctx) => {
 			const a = (args ?? "").trim().toLowerCase();
 			if (a === "" || a === "status") {
