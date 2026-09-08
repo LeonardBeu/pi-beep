@@ -1,6 +1,6 @@
 {
   "name": "@beu-l/pi-beep",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Beep notifier for pi: short-long beep when the agent finishes or asks a question. /beep on|off, volume control, no dependencies.",
   "keywords": ["pi-package"],
   "license": "MIT",

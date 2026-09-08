@@ -4,7 +4,7 @@ Beep notifier for [pi](https://pi.dev). Plays a short–long beep when the agent
 
 | | |
 |---|---|
-| Version | 0.2.0 |
+| Version | 0.2.1 |
 | License | MIT |
 | Package | [@beu-l/pi-beep on npm](https://www.npmjs.com/package/@beu-l/pi-beep) |
 
@@ -16,7 +16,7 @@ Beep notifier for [pi](https://pi.dev). Plays a short–long beep when the agent
 pi install npm:@beu-l/pi-beep
 ```
 
-Updates are picked up with `pi update`. Pin a version if you want stability: `npm:@beu-l/pi-beep@0.2.0`. Remove it later with:
+Updates are picked up with `pi update`. Pin a version if you want stability: `npm:@beu-l/pi-beep@0.2.1`. Remove it later with:
 
 ```bash
 pi uninstall npm:@beu-l/pi-beep
@@ -42,8 +42,9 @@ The two beeps are independent: disable just one with `/beep settled off` or `/be
 | `/beep settled on\|off` | Toggle only the run-finished beep (turning ON plays a confirmation beep) |
 | `/beep question on\|off` | Toggle only the ask-question beep (turning ON plays a confirmation beep) |
 | `/beep vol <0-100>` | Set volume % — saved and played immediately at the new level |
+| `/beep minimum <sec>` | Set the quiet cutoff in seconds — runs shorter than this stay silent (e.g. `minimum 30`) |
 
-**Argument autocomplete (v0.1.1+, v0.2.0 added `settled`/`question`):** while typing, pi lists `on`, `off`, `settled on|off`, `question on|off` and `vol <0-100>` automatically — no Tab required. Type `/beep `, pick an option with the arrow keys, then finish a percentage after `vol` (once you start typing digits, suggestions stop so your input is never overwritten). Note that Tab after the space is reserved for file-path completion by pi's editor and will not show these options.
+**Argument autocomplete (v0.1.1+, v0.2.0 added `settled`/`question`, v0.2.1 added `minimum`):** while typing, pi lists `on`, `off`, `settled on|off`, `question on|off`, `vol <0-100>` and `minimum <sec>` automatically — no Tab required. Type `/beep `, pick an option with the arrow keys, then finish a percentage after `vol` (once you start typing digits, suggestions stop so your input is never overwritten). Note that Tab after the space is reserved for file-path completion by pi's editor and will not show these options.
 
 ## Configuration
 
@@ -67,7 +68,7 @@ Location: `<agent-dir>/extensions/beep.json` (default `~/.pi/agent/extensions/be
 | `enabled` | `true` | Master switch |
 | `beepOnSettled` | `true` | Beep when a run finishes and waits for input |
 | `beepOnQuestion` | `true` | Beep when the agent asks you a question (never duration-gated) |
-| `minRunMs` | `15000` | Runs shorter than this don't trigger the settled beep |
+| `minRunMs` | `15000` | Runs shorter than this don't trigger the settled beep — live-editable via `/beep minimum <sec>` (seconds) |
 | `frequencyHz` | `880` | Tone pitch |
 | `shortMs` | `140` | First (short) beep duration |
 | `longMs` | `350` | Second (long) beep duration |

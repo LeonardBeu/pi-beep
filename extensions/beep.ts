@@ -8,7 +8,7 @@
  * Config: <agent-dir>/extensions/beep.json, e.g.
  *   { "enabled": true, "beepOnSettled": true, "beepOnQuestion": true,
  *     "minRunMs": 15000, "frequencyHz": 880, "shortMs": 140, "longMs": 350, "volumePct": 100 }
- * Commands: /beep [on|off] | settled on|off | question on|off | vol <0-100> — no arg shows state.
+ * Commands: /beep [on|off] | settled on|off | question on|off | vol <0-100> | minimum <sec> — no arg shows state.
  *
  * Sound: Windows = synthesized WAV played via PowerShell SoundPlayer (no deps).
  *        Other platforms = terminal bell (\x07) fallback (no volume control there).
@@ -179,7 +179,7 @@ export default function (pi: ExtensionAPI) {
 	const TOGGLES = new Map<string, "beepOnSettled" | "beepOnQuestion">([ ["settled", "beepOnSettled"], ["question", "beepOnQuestion"] ]);
 
 	pi.registerCommand("beep", {
-		description: "Beep notifier: /beep on|off | settled on|off | question on|off | vol <0-100>; no arg shows state",
+		description: "Beep notifier: /beep on|off | settled on|off | question on|off | vol <0-100> | minimum <sec>; no arg shows state",
 		getArgumentCompletions: (prefix) => {
 			const p = prefix.trim();
 			// Once a volume number is being typed, stop suggesting so the picker
@@ -188,6 +188,13 @@ export default function (pi: ExtensionAPI) {
 				return /^\d/.test(p.slice(3).trim())
 					? null
 					: [{ value: "vol ", label: "vol <0-100>", description: "set volume % (0–100), e.g. vol 50" }];
+			}
+			// Same trick for the quiet cutoff: once digits are typed, stop
+			// suggesting so the picker never replaces what was entered.
+			if (p.startsWith("minimum")) {
+				return /^\d/.test(p.slice(7).trim())
+					? null
+					: [{ value: "minimum ", label: "minimum <sec>", description: "quiet below this many seconds (e.g. minimum 30)" }];
 			}
 			// Per-event toggles: suggest on/off once the keyword is typed.
 			for (const kind of TOGGLES.keys()) {
@@ -206,12 +213,13 @@ export default function (pi: ExtensionAPI) {
 				{ value: "settled ", label: "settled on|off", description: "toggle the run-finished beep (only for runs ≥ minRunMs)" },
 				{ value: "question ", label: "question on|off", description: "toggle the ask-question beep" },
 				{ value: "vol ", label: "vol <0-100>", description: "set volume % (0–100), e.g. vol 50" },
+				{ value: "minimum ", label: "minimum <sec>", description: "quiet below this many seconds (default 15)" },
 			];
 		},
 		handler: async (args, ctx) => {
 			const a = (args ?? "").trim().toLowerCase();
 			if (a === "" || a === "status") {
-				ctx.ui.notify(`${statusLine()} — /beep on|off | settled on|off | question on|off | vol <0-100>`, "info");
+				ctx.ui.notify(`${statusLine()} — /beep on|off | settled on|off | question on|off | vol <0-100> | minimum <sec>`, "info");
 			} else if (a === "on" || a === "off") {
 				config.enabled = a === "on";
 				saveConfig();
@@ -227,6 +235,17 @@ export default function (pi: ExtensionAPI) {
 				saveConfig();
 				ctx.ui.notify(`Volume set to ${n}% — saved to beep.json`, "info");
 				beep(); // hear it at the new volume right away (silence if off)
+			} else if (a === "minimum" || a.startsWith("minimum ")) {
+				const s = a.slice(7).trim();
+				const sec = Number.parseInt(s, 10);
+				if (!/^\d+$/.test(s) || sec > 86400) {
+					ctx.ui.notify("Usage: /beep minimum <sec> (seconds, 0–86400)", "error");
+					return;
+				}
+				config.minRunMs = sec * 1000;
+				saveConfig();
+				ctx.ui.notify(`Quiet below ${sec}s — saved to beep.json. ${statusLine()}`, "info");
+				beep(); // confirm with a sound so you can hear it works
 			} else {
 				const [word, val] = a.split(/\s+/);
 				if (TOGGLES.has(word) && (val === "on" || val === "off")) {
@@ -235,7 +254,7 @@ export default function (pi: ExtensionAPI) {
 					ctx.ui.notify(`${statusLine()} — saved to beep.json`, "info");
 					if (val === "on") beep(); // confirm with a sound so you can hear it works
 				} else {
-					ctx.ui.notify(`Usage: /beep on|off | settled on|off | question on|off | vol <0-100>`, "error");
+					ctx.ui.notify(`Usage: /beep on|off | settled on|off | question on|off | vol <0-100> | minimum <sec>`, "error");
 				}
 			}
 		},
