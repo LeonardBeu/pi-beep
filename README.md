@@ -4,7 +4,7 @@ Beep notifier for [pi](https://pi.dev). Plays a short–long beep when the agent
 
 | | |
 |---|---|
-| Version | 0.2.1 |
+| Version | 0.2.2 |
 | License | MIT |
 | Package | [@beu-l/pi-beep on npm](https://www.npmjs.com/package/@beu-l/pi-beep) |
 
@@ -16,7 +16,7 @@ Beep notifier for [pi](https://pi.dev). Plays a short–long beep when the agent
 pi install npm:@beu-l/pi-beep
 ```
 
-Updates are picked up with `pi update`. Pin a version if you want stability: `npm:@beu-l/pi-beep@0.2.1`. Remove it later with:
+Updates are picked up with `pi update`. Pin a version if you want stability: `npm:@beu-l/pi-beep@0.2.2`. Remove it later with:
 
 ```bash
 pi uninstall npm:@beu-l/pi-beep
@@ -25,6 +25,8 @@ pi uninstall npm:@beu-l/pi-beep
 In an already-running session, type `/reload` to load or reload the extension.
 
 ## When it beeps
+
+Two moments trigger the notify:
 
 | Moment | Event | Why this one |
 |---|---|---|
