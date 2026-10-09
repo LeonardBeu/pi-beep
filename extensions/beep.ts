@@ -50,7 +50,7 @@ function detectBackend(): Backend {
 	} else if (p === "darwin") {
 		hasBinary("afplay") ? (b = { cmd: "afplay", args: [WAV_PATH] }) : (b = "bell");
 	} else if (hasBinary("paplay")) {
-		b = { cmd: "papley", args: [WAV_PATH] };
+		b = { cmd: "paplay", args: [WAV_PATH] };
 	} else if (hasBinary("aplay")) {
 		b = { cmd: "aplay", args: [WAV_PATH] };
 	} else {
@@ -89,6 +89,8 @@ let config = loadConfig();
 let runStart: number | null = null;
 
 function saveConfig(): void {
+	// mkdir -p: a fresh agent dir may have no extensions/ folder yet
+	fs.mkdirSync(path.dirname(CONFIG_PATH), { recursive: true });
 	fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2) + "\n");
 }
 
@@ -155,6 +157,9 @@ function statusLine(): string {
 }
 
 export default function (pi: ExtensionAPI) {
+	// Create beep.json with defaults on load so settings are hand-editable without running /beep first. Never crash pi over a read-only agent dir.
+	try { if (!fs.existsSync(CONFIG_PATH)) saveConfig(); } catch {}
+
 	// First start of the current run (retries re-fire this; keep the earliest).
 	pi.on("agent_start", () => {
 		if (runStart === null) runStart = Date.now();

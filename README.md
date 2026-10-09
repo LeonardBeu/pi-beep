@@ -4,7 +4,7 @@ Beep notifier for [pi](https://pi.dev). Plays a short–long beep when the agent
 
 | | |
 |---|---|
-| Version | 0.2.2 |
+| Version | 0.2.3 |
 | License | MIT |
 | Package | [@beu-l/pi-beep on npm](https://www.npmjs.com/package/@beu-l/pi-beep) |
 
@@ -16,7 +16,7 @@ Beep notifier for [pi](https://pi.dev). Plays a short–long beep when the agent
 pi install npm:@beu-l/pi-beep
 ```
 
-Updates are picked up with `pi update`. Pin a version if you want stability: `npm:@beu-l/pi-beep@0.2.2`. Remove it later with:
+Updates are picked up with `pi update`. Pin a version if you want stability: `npm:@beu-l/pi-beep@0.2.3`. Remove it later with:
 
 ```bash
 pi uninstall npm:@beu-l/pi-beep
@@ -50,7 +50,7 @@ The two beeps are independent: disable just one with `/beep settled off` or `/be
 
 ## Configuration
 
-Location: `<agent-dir>/extensions/beep.json` (default `~/.pi/agent/extensions/beep.json`; honors `PI_CODING_AGENT_DIR`). Created automatically by `/beep on|off|vol`, or create it by hand. Missing keys fall back to defaults — no file = all defaults.
+Location: `<agent-dir>/extensions/beep.json` (default `~/.pi/agent/extensions/beep.json`; honors `PI_CODING_AGENT_DIR`). Created automatically with default values when the extension loads (v0.2.3+) — you can then hand-edit it and run `/reload`. Missing keys fall back to defaults.
 
 ```json
 {
